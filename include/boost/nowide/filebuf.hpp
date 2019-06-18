@@ -12,6 +12,7 @@
 #include <boost/config.hpp>
 #include <boost/nowide/stackstring.hpp>
 #include <fstream>
+#include <iostream>
 #include <streambuf>
 #include <stdio.h>
 
