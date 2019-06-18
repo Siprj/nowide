@@ -359,6 +359,7 @@ namespace nowide {
                 setg(0,0,0);
                 if(fseek(file_,off,SEEK_CUR) != 0)
                 {
+                    std::cout << "off: " << off << " file_: " << file_ << "\n";
                     printf("fseek(file_,off,SEEK_CUR) != 0\n");
                     return -1;
                 }
