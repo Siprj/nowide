@@ -209,48 +209,39 @@ namespace nowide {
 
         int overflow(int c)
         {
-            printf("overflow(int c)\n");
 #ifdef BOOST_NOWIDE_DEBUG_FILEBUF
             print_guard g(this,__FUNCTION__);
 #endif
             if(!file_)
             {
-                printf("!file_\n");
                 return EOF;
             }
 
             if(fixg() < 0)
             {
-                printf("fixg() < 0\n");
                 return EOF;
             }
 
             size_t n = pptr() - pbase();
             if(n > 0) {
-                printf("n > 0\n");
                 if(::fwrite(pbase(),1,n,file_) < n)
                 {
-                    printf("::fwrite(pbase(),1,n,file_) < n\n");
                     return -1;
                 }
                 fflush(file_);
             }
 
             if(buffer_size_ > 0) {
-                printf("buffer_size_ > 0\n");
                 make_buffer();
                 setp(buffer_,buffer_+buffer_size_);
                 if(c!=EOF)
                 {
-                    printf("c!=EOF\n");
                     sputc(c);
                 }
             }
             else if(c!=EOF) {
-                printf("c!=EOF\n");
                 if(::fputc(c,file_)==EOF)
                 {
-                    printf("::fputc(c,file_)==EOF\n");
                     return EOF;
                 }
                 fflush(file_);
@@ -261,7 +252,6 @@ namespace nowide {
 
         int sync()
         {
-            printf("sync()\n");
             return overflow(EOF);
         }
 
@@ -300,7 +290,6 @@ namespace nowide {
                             std::ios_base::seekdir seekdir,
                             std::ios_base::openmode /*m*/)
         {
-            printf("seekoff\n");
 #ifdef BOOST_NOWIDE_DEBUG_FILEBUF
             print_guard g(this,__FUNCTION__);
 #endif
@@ -308,42 +297,33 @@ namespace nowide {
                 return EOF;
             if(fixp() < 0 || fixg() < 0)
             {
-                printf("fixp() < 0 || fixg() < 0\n");
                 return EOF;
             }
             if(seekdir == std::ios_base::cur)
             {
-                printf("seekdir == std::ios_base::cur\n");
                 if( ::fseek(file_,off,SEEK_CUR) < 0)
                 {
-                    printf("::fseek(file_,off,SEEK_CUR) < 0\n");
                     return EOF;
                 }
             }
             else if(seekdir == std::ios_base::beg)
             {
-                printf("::fseek(file_,off,SEEK_CUR) < 0\n");
                 if( ::fseek(file_,off,SEEK_SET) < 0)
                 {
-                    printf("::fseek(file_,off,SEEK_SET) < 0\n");
                     return EOF;
                 }
             }
             else if(seekdir == std::ios_base::end)
             {
-                printf("seekdir == std::ios_base::end\n");
                 if( ::fseek(file_,off,SEEK_END) < 0)
                 {
-                    printf("::fseek(file_,off,SEEK_END) < 0\n");
                     return EOF;
                 }
             }
             else
             {
-                printf("seekoff fail\n");
                 return -1;
             }
-            printf("ftell\n");
             return ftell(file_);
         }
         std::streampos seekpos(std::streampos off,std::ios_base::openmode m)
@@ -353,15 +333,11 @@ namespace nowide {
     private:
         int fixg()
         {
-            printf("fixg()\n");
             if(gptr()!=egptr()) {
-                printf("gptr()!=egptr()\n");
                 std::streamsize off = gptr() - egptr();
                 setg(0,0,0);
                 if(fseek(file_,off,SEEK_CUR) != 0)
                 {
-                    std::cout << "off: " << off << " file_: " << file_ << "\n";
-                    printf("fseek(file_,off,SEEK_CUR) != 0\n");
                     return -1;
                 }
             }
@@ -371,11 +347,8 @@ namespace nowide {
 
         int fixp()
         {
-            printf("fixp()\n");
             if(pptr()!=0) {
-                printf("pptr()!=0\n");
                 int r = sync();
-                printf("r = %d\n", r);
                 setp(0,0);
                 return r;
             }
